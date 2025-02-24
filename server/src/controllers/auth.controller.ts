@@ -1,6 +1,5 @@
 import { Request, Response, CookieOptions } from 'express';
 import User from '../models/user.model';
-import crypto from 'crypto';
 import { asyncHandler } from '../utils/asyncHandler';
 
 export interface CustomRequest extends Request {
@@ -11,35 +10,12 @@ export interface CustomRequest extends Request {
 
 import {
   loginValidationSchema,
-  requestResetPasswordSchema,
-  ResetPasswordSchema,
   signUpvalidationSchema,
-} from '../validation/validationSchema';
+} from '../validations/validationSchema';
 import ApiError from '../utils/ApiError';
 import ApiResponse from '../utils/ApiResponse';
 import uploadOnCloudinary from '../utils/Cloudinary';
 import { ObjectId } from 'mongoose';
-
-const generateAccessAndRefreshToken = async (
-  _id: ObjectId
-): Promise<{ accessToken: string; refreshToken: string }> => {
-  try {
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new ApiError(404, 'User not found');
-    }
-
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-    user.refreshToken = refreshToken;
-
-    await user.save({ validateBeforeSave: false });
-
-    return { accessToken, refreshToken };
-  } catch (error) {
-    throw new ApiError(500, 'Error while generating access and refresh token');
-  }
-};
 
 export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
   const validationResult = signUpvalidationSchema.safeParse(req.body);
@@ -142,11 +118,7 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
 
   // Step 4 : generate access and refresh tokens
 
-  const tokenResult = await generateAccessAndRefreshToken(
-    userExist._id as ObjectId
-  );
-
-  const { accessToken, refreshToken } = tokenResult;
+  const accessToken = await userExist.generateAccessToken();
 
   const userResponse = await User.findById(userExist._id).select(
     '-password -refreshToken'
@@ -172,11 +144,9 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   return res
     .status(200)
     .cookie('accessToken', accessToken, options)
-    .cookie('refreshToken', refreshToken, options)
     .json(
       new ApiResponse(200, 'Login successful', {
         accessToken,
-        refreshToken,
         user: userResponse.toObject({
           getters: true,
           virtuals: false,
@@ -194,16 +164,6 @@ export const userLogout = asyncHandler(
       throw new ApiError(401, 'User Id not found');
     }
 
-    await User.findByIdAndUpdate(
-      UserId,
-      {
-        $set: {
-          refreshToken: null,
-        },
-      },
-      { new: true }
-    );
-
     const options: CookieOptions = {
       secure: true,
       httpOnly: true,
@@ -213,7 +173,6 @@ export const userLogout = asyncHandler(
     return res
       .status(200)
       .clearCookie('accessToken', options)
-      .clearCookie('refreshToken', options)
       .json(new ApiResponse(200, 'User Logged Out', {}));
   }
 );

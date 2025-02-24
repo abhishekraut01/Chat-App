@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
-
+import jwt from 'jsonwebtoken'
 interface IUser extends Document {
   username: string;
   password: string;
   email:string;
   avatar:string;
+  generateAccessToken() : string
   isPasswordValid(password: string): Promise<boolean>;
 }
 
@@ -56,7 +57,7 @@ userSchema.methods.isPasswordValid = async function (password: string): Promise<
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = function () {
+userSchema.methods.generateAccessToken = async function () {
     const secret = process.env.ACCESS_TOKEN_SECRET ;
     if (!secret) {
       throw new Error("ACCESS_TOKEN_SECRET is not defined in environment variables");
