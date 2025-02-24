@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 import authRoute from './routes/auth.routes';
 
 import userRoutes from './routes/user.routes';
+
 app.use('/api/v1/auth', authRoute);
 
 app.use('/api/v1/user', userRoutes);

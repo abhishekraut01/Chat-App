@@ -1,19 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import jwt from 'jsonwebtoken'
 
 interface IUser extends Document {
   username: string;
   password: string;
   email:string;
   avatar:string;
-  refreshToken:string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpires?: Date | null;
-  generatePasswordResetToken : ()=>string;
-  generateRefreshToken : () =>string;
-  generateAccessToken : () =>string;
   isPasswordValid(password: string): Promise<boolean>;
 }
 
@@ -63,6 +55,22 @@ userSchema.pre<IUser>('save', async function (next) {
 userSchema.methods.isPasswordValid = async function (password: string): Promise<boolean> {
   return await bcrypt.compare(password, this.password);
 };
+
+userSchema.methods.generateAccessToken = function () {
+    const secret = process.env.ACCESS_TOKEN_SECRET ;
+    if (!secret) {
+      throw new Error("ACCESS_TOKEN_SECRET is not defined in environment variables");
+    }
+  
+    return jwt.sign(
+      {
+        _id: this._id,
+      },
+      secret,
+      { expiresIn: "1d" }
+    );
+  };
+  
 
 const User = mongoose.model<IUser>('User', userSchema);
 export default User;
