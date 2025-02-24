@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
+import errorHandler from './middlewares/globelErrorhandler.middleware';
 import ApiError from './utils/ApiError';
 import cookieParser from 'cookie-parser';
 
@@ -23,10 +24,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Import and use routes
+import authRoute from './routes/auth.routes';
+
+import userRoutes from './routes/user.routes';
+app.use('/api/v1/auth', authRoute);
+
+app.use('/api/v1/user', userRoutes);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(new ApiError(404, 'Route Not Found'));
 });
 
+// Global Error Handler
+app.use(errorHandler);
 export default app;
