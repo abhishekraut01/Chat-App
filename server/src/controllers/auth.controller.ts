@@ -1,7 +1,7 @@
 import { Request, Response, CookieOptions } from 'express';
 import User from '../models/user.model';
 import { asyncHandler } from '../utils/asyncHandler';
-
+import fs from "fs/promises"; // File system module for cleanup
 export interface CustomRequest extends Request {
   user?: {
     _id: string | ObjectId;
@@ -15,6 +15,7 @@ import {
 import ApiError from '../utils/ApiError';
 import ApiResponse from '../utils/ApiResponse';
 import { ObjectId } from 'mongoose';
+import uploadOnCloudinary from '../utils/Cloudinary';
 
 export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
   const validationResult = signUpvalidationSchema.safeParse(req.body);
@@ -45,7 +46,7 @@ export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
     username: username.toLowerCase(),
     email: email.toLowerCase(),
     password,
-    avatar: "",
+    avatar: '',
   });
 
   // Step 6: Remove sensitive fields for the response
@@ -161,4 +162,46 @@ export const userLogout = asyncHandler(
   }
 );
 
+export const updateProfile = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new ApiError(401, "Unauthorized access");
+    }
 
+    const localAvatarPath = req.file?.path;
+    if (!localAvatarPath) {
+      throw new ApiError(400, "Avatar file is required");
+    }
+
+    try {
+      // Upload image to Cloudinary
+      const avatar = await uploadOnCloudinary(localAvatarPath);
+      if (!avatar) {
+        throw new ApiError(500, "Error uploading avatar file");
+      }
+
+      // Update user with the new avatar
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { avatar: avatar.url },
+        { new: true, select: "-password" } // Exclude password from response
+      );
+
+      if (!updatedUser) {
+        throw new ApiError(500, "Error updating avatar");
+      }
+
+      // Cleanup local file after successful upload
+      await fs.unlink(localAvatarPath);
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, "Avatar updated successfully", updatedUser));
+    } catch (error) {
+      // Cleanup local file on error to prevent memory leak
+      await fs.unlink(localAvatarPath).catch(() => {});
+      throw error; // Forward to global error handler
+    }
+  }
+);
