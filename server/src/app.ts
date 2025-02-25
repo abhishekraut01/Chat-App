@@ -25,9 +25,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import and use routes
 import authRoute from './routes/auth.routes';
+import messageRoutes from './routes/message.routes';
 
 
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/message', messageRoutes);
 
 // 404 Handler
 app.use((req: Request, res: Response, next: NextFunction) => {
