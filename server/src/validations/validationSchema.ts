@@ -24,7 +24,7 @@ export const loginValidationSchema = Zod.object({
 
 
 export const updateUserProfileSchema = Zod.object({
-  username: Zod.string()
+  fullName: Zod.string()
     .min(3, 'Username must be at least 3 characters')
     .max(20, 'Username cannot exceed 20 characters')
     .optional(),

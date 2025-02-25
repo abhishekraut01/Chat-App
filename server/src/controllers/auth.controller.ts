@@ -41,27 +41,12 @@ export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(409, 'User already exist');
   }
 
-  // Step 3: Handle avatar and cover image file uploads
-
-  const localAvatarPath = req.file?.path;
-
-  if (!localAvatarPath) {
-    throw new ApiError(400, 'Avatar file is required');
-  }
-
-  //upload image to cloudinary
-  const avatar = await uploadOnCloudinary(localAvatarPath);
-
-  if (!avatar) {
-    throw new ApiError(500, 'Error uploading avatar file');
-  }
-
   // Step 5: Create and save the user
   const newUser = await User.create({
     username: username.toLowerCase(),
     email: email.toLowerCase(),
     password,
-    avatar: avatar.url,
+    avatar: "",
   });
 
   // Step 6: Remove sensitive fields for the response

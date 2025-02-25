@@ -5,7 +5,7 @@ interface IUser extends Document {
   username: string;
   password: string;
   email:string;
-  avatar:string;
+  avatar?:string;
   generateAccessToken() : string
   isPasswordValid(password: string): Promise<boolean>;
 }
@@ -29,6 +29,7 @@ const userSchema: Schema = new Schema<IUser>(
     },
     avatar:{
       type:String,
+      default:""
     },
     password: {
       type: String,
