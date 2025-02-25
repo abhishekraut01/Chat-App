@@ -1,5 +1,7 @@
 import express from 'express';
 import {
+  getUser,
+  updateProfile,
   userLogin,
   userLogout,
   userSignUp,
@@ -13,9 +15,10 @@ const router = express.Router();
 router.route('/signup').post(userSignUp);
 router.route('/login').post(userLogin);
 router.route('/logout').post(authMiddleware, userLogout);
+router.route('/getuser').get(authMiddleware, getUser);
 
 
-router.route('/updateProfile').patch(authMiddleware,upload.single("avatar"), userLogout);
+router.route('/updateProfile').patch(authMiddleware,upload.single("avatar"), updateProfile);
 
 
 

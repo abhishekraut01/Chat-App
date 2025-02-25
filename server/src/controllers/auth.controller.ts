@@ -205,3 +205,16 @@ export const updateProfile = asyncHandler(
     }
   }
 );
+
+
+export const getUser = asyncHandler(async (req:CustomRequest , res:Response)=>{
+  const user = req.user
+
+  if (!user) {
+    throw new ApiError(401, 'You are not authenticated');
+  }
+
+  return res
+      .status(200)
+      .json(new ApiResponse(200, 'User data fetched', user));
+})

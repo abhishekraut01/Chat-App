@@ -37,7 +37,7 @@ const authMiddleware = async (
     }
 
     const user = await User.findById(decode._id).select(
-      '-password -resetPasswordToken -resetPasswordExpires -refreshToken'
+      '-password '
     );
 
     if (!user) {
