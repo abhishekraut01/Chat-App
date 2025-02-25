@@ -14,7 +14,6 @@ import {
 } from '../validations/validationSchema';
 import ApiError from '../utils/ApiError';
 import ApiResponse from '../utils/ApiResponse';
-import uploadOnCloudinary from '../utils/Cloudinary';
 import { ObjectId } from 'mongoose';
 
 export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
@@ -161,3 +160,5 @@ export const userLogout = asyncHandler(
       .json(new ApiResponse(200, 'User Logged Out', {}));
   }
 );
+
+

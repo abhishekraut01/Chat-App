@@ -34,7 +34,6 @@ const userSchema: Schema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: 8, 
     }
   },
   { timestamps: true }
