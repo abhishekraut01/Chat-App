@@ -44,6 +44,8 @@ const useAuthStore = create<AuthState>((set) => ({
       set({authUser:res.data})
     } catch (error) {
       console.log(error)
+    }finally {
+      set({ isCheckingAuth: false });
     }
   }
 

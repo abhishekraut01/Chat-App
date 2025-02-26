@@ -1,7 +1,7 @@
 import { Request, Response, CookieOptions } from 'express';
 import User from '../models/user.model';
 import { asyncHandler } from '../utils/asyncHandler';
-import fs from "fs/promises"; // File system module for cleanup
+import fs from 'fs/promises'; // File system module for cleanup
 export interface CustomRequest extends Request {
   user?: {
     _id: string | ObjectId;
@@ -58,9 +58,25 @@ export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(500, 'Error while creating user');
   }
 
+  const accessToken = await createdUser.generateAccessToken();
+
   // Step 7: Return response
+
+  interface Ioptions {
+    secure: boolean;
+    httpOnly: boolean;
+    sameSite?: 'strict' | 'lax' | 'none';
+  }
+
+  const options: Ioptions = {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  };
+
   res
     .status(201)
+    .cookie('accessToken', accessToken, options)
     .json(new ApiResponse(201, 'User created successfully', createdUser));
 });
 
@@ -166,30 +182,30 @@ export const updateProfile = asyncHandler(
   async (req: CustomRequest, res: Response) => {
     const userId = req.user?._id;
     if (!userId) {
-      throw new ApiError(401, "Unauthorized access");
+      throw new ApiError(401, 'Unauthorized access');
     }
 
     const localAvatarPath = req.file?.path;
     if (!localAvatarPath) {
-      throw new ApiError(400, "Avatar file is required");
+      throw new ApiError(400, 'Avatar file is required');
     }
 
     try {
       // Upload image to Cloudinary
       const avatar = await uploadOnCloudinary(localAvatarPath);
       if (!avatar) {
-        throw new ApiError(500, "Error uploading avatar file");
+        throw new ApiError(500, 'Error uploading avatar file');
       }
 
       // Update user with the new avatar
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         { avatar: avatar.url },
-        { new: true, select: "-password" } // Exclude password from response
+        { new: true, select: '-password' } // Exclude password from response
       );
 
       if (!updatedUser) {
-        throw new ApiError(500, "Error updating avatar");
+        throw new ApiError(500, 'Error updating avatar');
       }
 
       // Cleanup local file after successful upload
@@ -197,7 +213,7 @@ export const updateProfile = asyncHandler(
 
       return res
         .status(200)
-        .json(new ApiResponse(200, "Avatar updated successfully", updatedUser));
+        .json(new ApiResponse(200, 'Avatar updated successfully', updatedUser));
     } catch (error) {
       // Cleanup local file on error to prevent memory leak
       await fs.unlink(localAvatarPath).catch(() => {});
@@ -206,15 +222,16 @@ export const updateProfile = asyncHandler(
   }
 );
 
+export const getUser = asyncHandler(
+  async (req: CustomRequest, res: Response) => {
+    const user = req.user;
 
-export const getUser = asyncHandler(async (req:CustomRequest , res:Response)=>{
-  const user = req.user
+    if (!user) {
+      throw new ApiError(401, 'You are not authenticated');
+    }
 
-  if (!user) {
-    throw new ApiError(401, 'You are not authenticated');
-  }
-
-  return res
+    return res
       .status(200)
       .json(new ApiResponse(200, 'User data fetched', user));
-})
+  }
+);
