@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { AxiosInstance } from "../lib/AxiosInstance";
+import toast from "react-hot-toast";
 
 interface AuthState {
   authUser: [] | null; 
@@ -10,6 +11,7 @@ interface AuthState {
   error: string | null;
   
   checkAuth: () => Promise<void>;
+  signup:(data:object) => Promise<void>;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -33,6 +35,18 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ isCheckingAuth: false });
     }
   },
+
+  signup: async (data)=>{
+    set({isSigningUp:true})
+    try {
+      const res = await AxiosInstance.post("/auth/signup",data)
+      toast.success("account created successfully")
+      set({authUser:res.data})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 }));
 
 export default useAuthStore;
