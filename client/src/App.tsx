@@ -9,6 +9,7 @@ import useAuthStore from "./store/useAuthStore";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import ErrorPage from "./pages/ErrorPage";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const { checkAuth, authUser, isCheckingAuth } = useAuthStore();
@@ -27,6 +28,7 @@ export default function App() {
 
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
       <NavBar />
       <Routes>
         <Route

@@ -78,7 +78,7 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ error: errorMessage });
     }
   },
-  
+
   login: async (data) => {
     set({ isLoggingIn: true, error: null });
 
