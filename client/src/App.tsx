@@ -42,7 +42,7 @@ export default function App() {
           element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
         <Route
-          path="/setting"
+          path="/settings"
           element={authUser ? <SettingPage /> : <Navigate to="/login" />}
         />
         <Route

@@ -14,6 +14,7 @@ interface AuthState {
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
   signup: (data: object) => Promise<void>;
+  login: (data: object) => Promise<void>;
 }
 
 const handleError = (error: unknown): string => {
@@ -53,8 +54,8 @@ const useAuthStore = create<AuthState>((set) => ({
 
     try {
       const res = await AxiosInstance.post("/auth/signup", data);
-      toast.success("Account created successfully");
       set({ authUser: res.data });
+      toast.success("Account created successfully");
     } catch (error) {
       console.error("Signup Error:", error);
       const errorMessage = handleError(error);
@@ -68,13 +69,30 @@ const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     try {
       await AxiosInstance.post("/auth/logout");
-      toast.success("Logged out successfully");
       set({ authUser: null, error: null });
+      toast.success("Logged out successfully");
     } catch (error) {
       console.error("Logout Error:", error);
       const errorMessage = handleError(error);
       toast.error(errorMessage);
       set({ error: errorMessage });
+    }
+  },
+  
+  login: async (data) => {
+    set({ isLoggingIn: true, error: null });
+
+    try {
+      const res = await AxiosInstance.post("/auth/login", data);
+      set({ authUser: res.data });
+      toast.success("Login successfully");
+    } catch (error) {
+      console.error("Login Error:", error);
+      const errorMessage = handleError(error);
+      toast.error(errorMessage);
+      set({ error: errorMessage });
+    } finally {
+      set({ isLoggingIn: false });
     }
   },
 }));
