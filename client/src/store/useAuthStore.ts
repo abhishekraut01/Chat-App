@@ -1,24 +1,36 @@
 import { create } from "zustand";
 import { AxiosInstance } from "../lib/AxiosInstance";
+import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 interface AuthState {
-  authUser: [] | null; 
+  authUser: object | null;
   isCheckingAuth: boolean;
   isSigningUp: boolean;
-  isLoggingIn: boolean; 
+  isLoggingIn: boolean;
   isUpdatingProfile: boolean;
   error: string | null;
-  
+
   checkAuth: () => Promise<void>;
-  signup:(data:object) => Promise<void>;
+  logout: () => Promise<void>;
+  signup: (data: object) => Promise<void>;
 }
+
+const handleError = (error: unknown): string => {
+  if (error instanceof AxiosError) {
+    return error.response?.data?.message || "Request failed";
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "An unknown error occurred";
+};
 
 const useAuthStore = create<AuthState>((set) => ({
   authUser: null,
   isCheckingAuth: true,
   isSigningUp: false,
-  isLoggingIn: false, // Fixed typo
+  isLoggingIn: false,
   isUpdatingProfile: false,
   error: null,
 
@@ -26,29 +38,45 @@ const useAuthStore = create<AuthState>((set) => ({
     set({ isCheckingAuth: true, error: null });
 
     try {
-      const res = await AxiosInstance("/auth/getuser");
+      const res = await AxiosInstance.get("/auth/getuser");
       set({ authUser: res.data });
     } catch (error) {
-      console.error(`Error in checkAuth:`, error);
-      set({ authUser: null, error: "Failed to authenticate user" });
+      console.error("Error in checkAuth:", error);
+      set({ authUser: null, error: handleError(error) });
     } finally {
       set({ isCheckingAuth: false });
     }
   },
 
-  signup: async (data)=>{
-    set({isSigningUp:true})
-    try {
-      const res = await AxiosInstance.post("/auth/signup",data)
-      toast.success("account created successfully")
-      set({authUser:res.data})
-    } catch (error) {
-      console.log(error)
-    }finally {
-      set({ isCheckingAuth: false });
-    }
-  }
+  signup: async (data) => {
+    set({ isSigningUp: true, error: null });
 
+    try {
+      const res = await AxiosInstance.post("/auth/signup", data);
+      toast.success("Account created successfully");
+      set({ authUser: res.data });
+    } catch (error) {
+      console.error("Signup Error:", error);
+      const errorMessage = handleError(error);
+      toast.error(errorMessage);
+      set({ error: errorMessage });
+    } finally {
+      set({ isSigningUp: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await AxiosInstance.post("/auth/logout");
+      toast.success("Logged out successfully");
+      set({ authUser: null, error: null });
+    } catch (error) {
+      console.error("Logout Error:", error);
+      const errorMessage = handleError(error);
+      toast.error(errorMessage);
+      set({ error: errorMessage });
+    }
+  },
 }));
 
 export default useAuthStore;
