@@ -83,7 +83,7 @@ const ProfilePage = () => {
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-4 bg-base-200 rounded-lg border">
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">
                 {authUser?.username}
               </p>
             </div>
@@ -93,7 +93,7 @@ const ProfilePage = () => {
                 <Mail className="w-4 h-4" />
                 Email Address
               </div>
-              <p className="px-4 py-4 bg-base-200 rounded-lg border">
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">
                 {authUser?.email}
               </p>
             </div>
@@ -108,7 +108,7 @@ const ProfilePage = () => {
 
             <div className="flex justify-between">
               <p className="mt-5">Member since</p>
-              <p className="mt-5 text-yellow-100">2023</p>
+              <p className="mt-5 text-yellow-100">{(authUser.createdAt)?.slice(0,10)}</p>
             </div>
             <div className="flex justify-between border-b-2 border-base-100 mt-3"></div>
             <div className="flex justify-between">

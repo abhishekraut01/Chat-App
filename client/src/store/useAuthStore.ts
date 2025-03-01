@@ -9,6 +9,7 @@ interface AuthState {
     email:string,
     password:string,
     avatar?:string
+    createdAt?:string
   } | null;
   isCheckingAuth: boolean;
   isSigningUp: boolean;
@@ -46,7 +47,7 @@ const useAuthStore = create<AuthState>((set) => ({
 
     try {
       const res = await AxiosInstance.get("/auth/getuser");
-      set({ authUser: res.data });
+      set({ authUser: res.data.data });
     } catch (error) {
       console.error("Error in checkAuth:", error);
       set({ authUser: null, error: handleError(error) });
@@ -60,7 +61,7 @@ const useAuthStore = create<AuthState>((set) => ({
 
     try {
       const res = await AxiosInstance.post("/auth/signup", data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.data });
       toast.success("Account created successfully");
     } catch (error) {
       console.error("Signup Error:", error);
@@ -90,7 +91,7 @@ const useAuthStore = create<AuthState>((set) => ({
 
     try {
       const res = await AxiosInstance.post("/auth/login", data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.data });
       toast.success("Login successfully");
     } catch (error) {
       console.error("Login Error:", error);
@@ -110,8 +111,7 @@ const useAuthStore = create<AuthState>((set) => ({
         headers: { "Content-Type": "multipart/form-data" },
       });
   
-      set({ authUser: res.data.data }); // ✅ Store full user object
-  
+      set({ authUser: res.data.data }); 
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Profile Update Error:", error);
