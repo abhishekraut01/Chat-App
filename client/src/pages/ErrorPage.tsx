@@ -2,7 +2,7 @@
 
 const ErrorPage = () => {
   return (
-    <div>ErrorPage</div>
+    <div className="pt-20 h-screen">ErrorPage</div>
   )
 }
 

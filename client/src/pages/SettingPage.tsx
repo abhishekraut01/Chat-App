@@ -1,7 +1,7 @@
 
 const SettingPage = () => {
   return (
-    <div>SettingPage</div>
+    <div className="pt-20 h-screen">SettingPage</div>
   )
 }
 

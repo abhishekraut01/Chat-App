@@ -2,7 +2,7 @@ const HomePage = () => {
 
 
   return (
-    <div>Homepage</div>
+    <div className="pt-20 h-screen">Homepage</div>
   )
 }
 
