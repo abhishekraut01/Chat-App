@@ -4,7 +4,12 @@ import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 
 interface AuthState {
-  authUser: object | null;
+  authUser: {
+    username?:string,
+    email:string,
+    password:string,
+    avatar?:string
+  } | null;
   isCheckingAuth: boolean;
   isSigningUp: boolean;
   isLoggingIn: boolean;
@@ -15,6 +20,7 @@ interface AuthState {
   logout: () => Promise<void>;
   signup: (data: object) => Promise<void>;
   login: (data: object) => Promise<void>;
+  updateProfile: (data: object) => Promise<void>;
 }
 
 const handleError = (error: unknown): string => {
@@ -94,7 +100,22 @@ const useAuthStore = create<AuthState>((set) => ({
     } finally {
       set({ isLoggingIn: false });
     }
+  },               
+  updateProfile: async (data) =>{
+    set({isUpdatingProfile:true})
+    try {
+      const res = await AxiosInstance.post('/auth/updateProfile' , data);
+      set({authUser:res.data.avatar})
+    } catch (error) {
+      console.error("Login Error:", error);
+      const errorMessage = handleError(error);
+      toast.error(errorMessage);
+      set({ error: errorMessage });
+    }finally{
+      set({isUpdatingProfile:false})
+    }
   },
+
 }));
 
 export default useAuthStore;

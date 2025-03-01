@@ -208,9 +208,6 @@ export const updateProfile = asyncHandler(
         throw new ApiError(500, 'Error updating avatar');
       }
 
-      // Cleanup local file after successful upload
-      await fs.unlink(localAvatarPath);
-
       return res
         .status(200)
         .json(new ApiResponse(200, 'Avatar updated successfully', updatedUser));

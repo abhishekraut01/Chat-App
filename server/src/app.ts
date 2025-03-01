@@ -24,6 +24,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 // Import and use routes
 import authRoute from './routes/auth.routes';
 import messageRoutes from './routes/message.routes';
