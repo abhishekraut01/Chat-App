@@ -18,7 +18,7 @@ router.route('/logout').post(authMiddleware, userLogout);
 router.route('/getuser').get(authMiddleware, getUser);
 
 
-router.route('/updateProfile').patch(authMiddleware,upload.single("avatar"), updateProfile);
+router.route('/updateProfile').patch(authMiddleware, upload.single("avatar"), updateProfile);
 
 
 

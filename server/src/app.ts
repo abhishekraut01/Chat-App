@@ -21,9 +21,8 @@ app.use(
 );
 app.use(helmet());
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
 // Import and use routes
 import authRoute from './routes/auth.routes';

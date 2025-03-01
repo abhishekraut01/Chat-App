@@ -20,7 +20,7 @@ interface AuthState {
   logout: () => Promise<void>;
   signup: (data: object) => Promise<void>;
   login: (data: object) => Promise<void>;
-  updateProfile: (data: object) => Promise<void>;
+  updateProfile: (formData: FormData) => Promise<void>;
 }
 
 const handleError = (error: unknown): string => {
@@ -101,21 +101,27 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ isLoggingIn: false });
     }
   },               
-  updateProfile: async (data) =>{
-    set({isUpdatingProfile:true})
+  
+  updateProfile: async (formData: FormData) => {
+    set({ isUpdatingProfile: true });
+  
     try {
-      const res = await AxiosInstance.post('/auth/updateProfile' , data);
-      set({authUser:res.data.avatar})
+      const res = await AxiosInstance.patch("/auth/updateProfile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      set({ authUser: res.data.data }); // ✅ Store full user object
+  
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error("Profile Update Error:", error);
       const errorMessage = handleError(error);
       toast.error(errorMessage);
       set({ error: errorMessage });
-    }finally{
-      set({isUpdatingProfile:false})
+    } finally {
+      set({ isUpdatingProfile: false });
     }
-  },
-
+  }  
 }));
 
 export default useAuthStore;

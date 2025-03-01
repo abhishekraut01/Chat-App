@@ -1,28 +1,32 @@
-import { Camera, Mail, Upload, User } from "lucide-react";
+import { Camera, Mail, User } from "lucide-react";
 import useAuthStore from "../store/useAuthStore";
 import { useState } from "react";
 
 const ProfilePage = () => {
   const { isUpdatingProfile, authUser ,updateProfile} = useAuthStore();
   const [updatedImage , setUpdatedImage] = useState('')
-  const handleAvatarUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): Promise<void> => {
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
-    const file = files[0];
-    if(!file) return 
-
-    const reader = new FileReader()
+    if (!files || files.length === 0) return;
+  
+    const file = files[0]; // 🛠 Select first file
+    if (!file) return;
+  
+    // ✅ Show preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      setUpdatedImage(reader.result as string); // Show preview image
+    };
     reader.readAsDataURL(file);
-
-    reader.onload = async ()=>{
-      const base64Avatar = reader.result as string;
-      setUpdatedImage(base64Avatar)
-      await updateProfile({avatar:base64Avatar})
-    }
-
+  
+    // ✅ Create FormData & Upload
+    const formData = new FormData();
+    formData.append("avatar", file); // Key must match `upload.single("avatar")`
+  
+    await updateProfile(formData); // Pass FormData, not Base64
   };
+  
 
   if (!authUser) return;
 
@@ -60,7 +64,7 @@ const ProfilePage = () => {
                   type="file"
                   id="avatar-upload"
                   className="hidden"
-                  accept="image/*"
+                  accept="avatar/*"
                   onChange={handleAvatarUpload}
                   disabled={isUpdatingProfile}
                 />
