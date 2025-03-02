@@ -10,9 +10,11 @@ import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import ErrorPage from "./pages/ErrorPage";
 import { Toaster } from "react-hot-toast";
+import useThemeStore from "./store/ThemesStore";
 
 export default function App() {
   const { checkAuth, authUser, isCheckingAuth } = useAuthStore();
+  const {theme} = useThemeStore();
 
   useEffect(() => {
     checkAuth();
@@ -27,7 +29,7 @@ export default function App() {
   }
 
   return (
-    <div>
+    <div data-theme={theme}>
       <Toaster position="top-center" reverseOrder={false} />
       <NavBar />
       <Routes>
