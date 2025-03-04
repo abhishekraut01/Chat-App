@@ -24,7 +24,7 @@ interface AuthState {
   updateProfile: (formData: FormData) => Promise<void>;
 }
 
-const handleError = (error: unknown): string => {
+export const handleError = (error: unknown): string => {
   if (error instanceof AxiosError) {
     return error.response?.data?.message || "Request failed";
   }
