@@ -6,13 +6,14 @@ import toast from "react-hot-toast";
 interface IUseChatStore {
   messages: string[];
   users: string[];
-  selectedUser: null;
+  selectedUser: object | null;
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
   error: string | null;
 
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
+  setSelectedUser: (selectedUser: object) => void;
 }
 
 const UseChatStore = create<IUseChatStore>((set) => ({
@@ -52,6 +53,8 @@ const UseChatStore = create<IUseChatStore>((set) => ({
       set({ isMessagesLoading: false });
     }
   },
+
+  setSelectedUser: (selectedUser) => set({ selectedUser: selectedUser }),
 }));
 
 export default UseChatStore;
