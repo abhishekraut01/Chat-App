@@ -23,7 +23,7 @@ interface IUseChatStore {
 
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
-  setSelectedUser: (selectedUser: userData) => void;
+  setSelectedUser: (selectedUser: userData | null) => void;
 }
 
 const UseChatStore = create<IUseChatStore>((set) => ({
@@ -64,7 +64,7 @@ const UseChatStore = create<IUseChatStore>((set) => ({
     }
   },
 
-  setSelectedUser: (selectedUser:userData) => set({ selectedUser: selectedUser }),
+  setSelectedUser: (selectedUser:userData | null) => set({ selectedUser: selectedUser }),
 }));
 
 export default UseChatStore;
