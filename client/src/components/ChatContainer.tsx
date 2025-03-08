@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import UseChatStore from "../store/UseChatStore"
+import MessageSkeleton from "./skeletons/MessageSkeleton"
 
 const ChatContainer = () => {
   const {messages , getMessages , selectedUser , setSelectedUser , isMessagesLoading}= UseChatStore()
@@ -10,12 +11,12 @@ const ChatContainer = () => {
     }
   },[selectedUser , getMessages])
 
-  if (isMessagesLoading) return 
+  if (isMessagesLoading) return <MessageSkeleton/>
   return (
-    <div>
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
+    <div className="flex flex-1 flex-col overflow-auto">
+      <ChatHeader/>
+      <p>messages.....</p>
+      <ChatInput/>
     </div>
   )
 }
