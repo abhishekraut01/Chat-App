@@ -13,6 +13,16 @@ export type userData = {
   updatedAt: Date;
 };
 
+export type messageData = {
+  _id: string;
+  message: string;
+  senderId: string;
+  recieverId: string;
+  image: string;
+  createdAt: Date
+  updatedAt: Date;
+};
+
 interface IUseChatStore {
   messages: string[];
   users: userData[];
@@ -24,9 +34,10 @@ interface IUseChatStore {
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
   setSelectedUser: (selectedUser: userData | null) => void;
+  sendMessages: (messageData: messageData ) => Promise<void>;
 }
 
-const UseChatStore = create<IUseChatStore>((set) => ({
+const UseChatStore = create<IUseChatStore>((set , get) => ({
   messages: [],
   users: [],
   selectedUser: null,
@@ -61,6 +72,18 @@ const UseChatStore = create<IUseChatStore>((set) => ({
       set({ error: errorMessage });
     } finally {
       set({ isMessagesLoading: false });
+    }
+  },
+
+  sendMessages: async (messageData)=>{
+    const {selectedUser , messages} = get();
+    try {
+      const res = await AxiosInstance.post(`/message/${selectedUser}` , messageData);
+      set({messages:[...messages , res.data.data]})
+    } catch (error) {
+      console.log("error occured while sending messages", error);
+      const errorMessage = handleError(error);
+      toast.error(errorMessage);
     }
   },
 

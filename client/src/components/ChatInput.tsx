@@ -1,12 +1,11 @@
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
 
 const ChatInput = () => {
-    const [text , setText] = useState("")
-    const [img , setImg] = useState(null)
-    const fileInputRef = useRef()
-  return (
-    <div>ChatInput</div>
-  )
-}
+  const [text, setText] = useState("");
+  const [img, setImg] = useState(null);
+  const fileInputRef = useRef(null);
 
-export default ChatInput
+  return <div>ChatInput</div>;
+};
+
+export default ChatInput;
