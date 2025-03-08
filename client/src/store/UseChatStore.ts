@@ -3,17 +3,27 @@ import { AxiosInstance } from "../lib/AxiosInstance";
 import { handleError } from "./useAuthStore";
 import toast from "react-hot-toast";
 
+export type userData = {
+  _id: string;
+  username: string;
+  email: string;
+  avatar: string;
+  password: string;
+  createdAt: Date
+  updatedAt: Date;
+};
+
 interface IUseChatStore {
   messages: string[];
-  users: string[];
-  selectedUser: object | null;
+  users: userData[];
+  selectedUser: userData | null;
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
   error: string | null;
 
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
-  setSelectedUser: (selectedUser: object) => void;
+  setSelectedUser: (selectedUser: userData) => void;
 }
 
 const UseChatStore = create<IUseChatStore>((set) => ({
@@ -54,7 +64,7 @@ const UseChatStore = create<IUseChatStore>((set) => ({
     }
   },
 
-  setSelectedUser: (selectedUser) => set({ selectedUser: selectedUser }),
+  setSelectedUser: (selectedUser:userData) => set({ selectedUser: selectedUser }),
 }));
 
 export default UseChatStore;
