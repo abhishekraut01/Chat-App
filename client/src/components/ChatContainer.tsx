@@ -1,6 +1,8 @@
 import { useEffect } from "react"
 import UseChatStore from "../store/UseChatStore"
 import MessageSkeleton from "./skeletons/MessageSkeleton"
+import ChatHeader from "./ChatHeader"
+import ChatInput from "./ChatInput"
 
 const ChatContainer = () => {
   const {messages , getMessages , selectedUser , setSelectedUser , isMessagesLoading}= UseChatStore()
