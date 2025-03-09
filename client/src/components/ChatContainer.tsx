@@ -42,7 +42,7 @@ const ChatContainer = () => {
               <div className="size-10 rounded-full border">
                 <img
                   src={
-                    message._id === authUser?._id
+                    message.senderId === authUser?._id
                       ? authUser?.avatar || "/avatar.png"
                       : selectedUser?.avatar || "/avatar.png"
                   }
@@ -52,7 +52,8 @@ const ChatContainer = () => {
             </div>
             <div className="chat-header mb-1">
               <time className="text-xs opacity-50 ml-1">
-                {message.createdAt}
+                {(message.createdAt)?.slice(0,10)}
+                
               </time>
             </div>
             <div className="chat-bubble flex">
