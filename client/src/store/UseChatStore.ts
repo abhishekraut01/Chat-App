@@ -15,16 +15,16 @@ export type userData = {
 
 export type messageData = {
   _id?: string;
-  text: string;
+  message: string;
   senderId?: string;
   recieverId?: string;
   image?: string;
-  createdAt?: Date
-  updatedAt?: Date;
+  createdAt?: string
+  updatedAt?: string;
 };
 
 interface IUseChatStore {
-  messages: string[];
+  messages: messageData[];
   users: userData[];
   selectedUser: userData | null;
   isUsersLoading: boolean;

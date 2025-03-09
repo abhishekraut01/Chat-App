@@ -5,10 +5,11 @@ import toast from "react-hot-toast";
 
 interface AuthState {
   authUser: {
+    _id:string,
     username?:string,
     email:string,
     password:string,
-    avatar?:string
+    avatar:string
     createdAt?:string
   } | null;
   isCheckingAuth: boolean;
