@@ -34,7 +34,7 @@ interface IUseChatStore {
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
   setSelectedUser: (selectedUser: userData | null) => void;
-  sendMessages: (messageData: messageData ) => Promise<void>;
+  sendMessages: (messageData: FormData ) => Promise<void>;
 }
 
 const UseChatStore = create<IUseChatStore>((set , get) => ({
@@ -75,17 +75,23 @@ const UseChatStore = create<IUseChatStore>((set , get) => ({
     }
   },
 
-  sendMessages: async (messageData)=>{
-    const {selectedUser , messages} = get();
+  sendMessages: async (messageData: FormData) => {
+    const { selectedUser, messages } = get();
     try {
-      const res = await AxiosInstance.post(`/message/${selectedUser?._id}` , messageData);
-      set({messages:[...messages , res.data.data]})
+      const res = await AxiosInstance.post(
+        `/message/${selectedUser?._id}`,
+        messageData,
+        { headers: { "Content-Type": "multipart/form-data" } } // Required for file uploads
+      );
+  
+      set({ messages: [...messages, res.data.data] });
     } catch (error) {
-      console.log("error occured while sending messages", error);
+      console.log("Error occurred while sending messages", error);
       const errorMessage = handleError(error);
       toast.error(errorMessage);
     }
   },
+  
 
   setSelectedUser: (selectedUser:userData | null) => set({ selectedUser: selectedUser }),
 }));

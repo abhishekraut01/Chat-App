@@ -7,6 +7,8 @@ const ChatInput = () => {
   const [imagePreview, setImagePreview] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { sendMessages } = UseChatStore();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
+
 
   const handleImageChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -14,6 +16,8 @@ const ChatInput = () => {
 
     const file = files[0]; // 🛠 Select first file
     if (!file) return;
+
+    setSelectedFile(file); // Store the actual file
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -29,21 +33,24 @@ const ChatInput = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!text.trim() && !imagePreview) return;
+    if(!text.trim() && !selectedFile) return;
+
+    const formData = new FormData();
+    formData.append("text", text.trim()); // Add message text
+
+    if (selectedFile) {
+      formData.append("image", selectedFile); // Add image file
+    }
 
     try {
-      await sendMessages({
-        text:text.trim(),
-        image:imagePreview
-      })
-
-      //clear form 
-      setText("");
-      setImagePreview("")
-      if(fileInputRef.current) fileInputRef.current.value = ""
-    } catch (error) {
-      console.error("failed to send message" , error)
-    }
+    await sendMessages(formData); // Send FormData instead of JSON
+    setText("");
+    setImagePreview("");
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  } catch (error) {
+    console.error("Failed to send message", error);
+  }
 
   };
 
