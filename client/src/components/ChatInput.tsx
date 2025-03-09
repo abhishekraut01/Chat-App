@@ -4,16 +4,47 @@ import { Image, Send, X } from "lucide-react";
 
 const ChatInput = () => {
   const [text, setText] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { sendMessages } = UseChatStore();
 
-  const handleImageChange = () => {};
+  const handleImageChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
 
-  const removeImage = () => {};
+    const file = files[0]; // 🛠 Select first file
+    if (!file) return;
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault()
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string); // Show preview image
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setImagePreview("");
+    if(fileInputRef.current) fileInputRef.current.value = ""
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if(!text.trim() && !imagePreview) return;
+
+    try {
+      await sendMessages({
+        message:text.trim(),
+        image:imagePreview
+      })
+
+      //clear form 
+      setText("");
+      setImagePreview("")
+      if(fileInputRef.current) fileInputRef.current.value = ""
+    } catch (error) {
+      console.error("failed to send message" , error)
+    }
+
   };
 
   return (
@@ -64,6 +95,7 @@ const ChatInput = () => {
             <Image size={20} />
           </button>
         </div>
+
         <button
           type="submit"
           className="btn btn-sm btn-circle"
@@ -71,6 +103,7 @@ const ChatInput = () => {
         >
           <Send size={22} />
         </button>
+
       </form>
     </div>
   );

@@ -14,13 +14,13 @@ export type userData = {
 };
 
 export type messageData = {
-  _id: string;
+  _id?: string;
   message: string;
-  senderId: string;
-  recieverId: string;
-  image: string;
-  createdAt: Date
-  updatedAt: Date;
+  senderId?: string;
+  recieverId?: string;
+  image?: string;
+  createdAt?: Date
+  updatedAt?: Date;
 };
 
 interface IUseChatStore {
