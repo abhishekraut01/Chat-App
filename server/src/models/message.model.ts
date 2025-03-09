@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 interface IMessage extends Document {
   message: string;
   senderId: Types.ObjectId;
-  recieverId:Types.ObjectId;
+  receiverId:Types.ObjectId;
   image?:string;
 }
 
@@ -14,11 +14,13 @@ const MessageSchema: Schema = new Schema<IMessage>(
     },
     senderId:{
       type: mongoose.Schema.Types.ObjectId,
-      ref:"User"
+      ref:"User",
+      required:true
     },
-    recieverId:{
+    receiverId:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        ref:"User",
+        required:true
       },
     image: {
       type: String,
