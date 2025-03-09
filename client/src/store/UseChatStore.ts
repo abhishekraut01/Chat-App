@@ -93,7 +93,10 @@ const UseChatStore = create<IUseChatStore>((set , get) => ({
   },
   
 
-  setSelectedUser: (selectedUser:userData | null) => set({ selectedUser: selectedUser }),
+  setSelectedUser: (selectedUser:userData | null) => {
+    set({messages:[]})
+    set({ selectedUser: selectedUser })
+  },
 }));
 
 export default UseChatStore;
