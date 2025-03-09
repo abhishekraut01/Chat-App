@@ -14,14 +14,14 @@ const ChatInput = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0]; // 🛠 Select first file
+    const file = files[0]; 
     if (!file) return;
 
-    setSelectedFile(file); // Store the actual file
+    setSelectedFile(file); 
 
     const reader = new FileReader();
     reader.onload = () => {
-      setImagePreview(reader.result as string); // Show preview image
+      setImagePreview(reader.result as string); 
     };
     reader.readAsDataURL(file);
   };
