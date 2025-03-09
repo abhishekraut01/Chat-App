@@ -78,7 +78,7 @@ const UseChatStore = create<IUseChatStore>((set , get) => ({
   sendMessages: async (messageData)=>{
     const {selectedUser , messages} = get();
     try {
-      const res = await AxiosInstance.post(`/message/${selectedUser}` , messageData);
+      const res = await AxiosInstance.post(`/message/${selectedUser?._id}` , messageData);
       set({messages:[...messages , res.data.data]})
     } catch (error) {
       console.log("error occured while sending messages", error);
