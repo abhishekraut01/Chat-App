@@ -33,7 +33,7 @@ const ChatInput = () => {
 
     try {
       await sendMessages({
-        message:text.trim(),
+        text:text.trim(),
         image:imagePreview
       })
 

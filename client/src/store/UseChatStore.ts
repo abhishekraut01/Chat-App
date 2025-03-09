@@ -15,7 +15,7 @@ export type userData = {
 
 export type messageData = {
   _id?: string;
-  message: string;
+  text: string;
   senderId?: string;
   recieverId?: string;
   image?: string;
