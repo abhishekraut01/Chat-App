@@ -9,7 +9,7 @@ export type userData = {
   email: string;
   avatar: string;
   password: string;
-  createdAt: Date
+  createdAt: Date;
   updatedAt: Date;
 };
 
@@ -19,7 +19,7 @@ export type messageData = {
   senderId?: string;
   recieverId?: string;
   image?: string;
-  createdAt?: string
+  createdAt?: string;
   updatedAt?: string;
 };
 
@@ -34,10 +34,10 @@ interface IUseChatStore {
   getUsers: () => Promise<void>;
   getMessages: (id: string) => Promise<void>;
   setSelectedUser: (selectedUser: userData | null) => void;
-  sendMessages: (messageData: FormData ) => Promise<void>;
+  sendMessages: (messageData: FormData) => Promise<void>;
 }
 
-const UseChatStore = create<IUseChatStore>((set , get) => ({
+const UseChatStore = create<IUseChatStore>((set, get) => ({
   messages: [],
   users: [],
   selectedUser: null,
@@ -83,7 +83,7 @@ const UseChatStore = create<IUseChatStore>((set , get) => ({
         messageData,
         { headers: { "Content-Type": "multipart/form-data" } } // Required for file uploads
       );
-  
+
       set({ messages: [...messages, res.data.data] });
     } catch (error) {
       console.log("Error occurred while sending messages", error);
@@ -91,11 +91,10 @@ const UseChatStore = create<IUseChatStore>((set , get) => ({
       toast.error(errorMessage);
     }
   },
-  
 
-  setSelectedUser: (selectedUser:userData | null) => {
-    set({messages:[]})
-    set({ selectedUser: selectedUser })
+  setSelectedUser: (selectedUser: userData | null) => {
+    set({ messages: [] });
+    set({ selectedUser: selectedUser });
   },
 }));
 
