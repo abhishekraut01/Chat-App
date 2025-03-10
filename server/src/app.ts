@@ -6,28 +6,25 @@ import path from 'path';
 import errorHandler from './middlewares/globelErrorhandler.middleware';
 import ApiError from './utils/ApiError';
 import cookieParser from 'cookie-parser';
-
+import { app , server  } from './utils/Socket';
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-const app: Application = express();
 
 // Middlewares
 app.use(
   cors({
     origin: process.env.ALLOW_ORIGIN,
-    credentials:true
+    credentials: true,
   })
 );
 app.use(helmet());
 app.use(cookieParser());
-app.use(express.json({ limit: "5mb" }));
-app.use(express.urlencoded({ limit: "5mb", extended: true }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 // Import and use routes
 import authRoute from './routes/auth.routes';
 import messageRoutes from './routes/message.routes';
-
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/message', messageRoutes);
