@@ -1,21 +1,22 @@
-import app from "./app";
-import dotenv from 'dotenv'
-import path from "node:path"
-import { connectDB } from "./db/connectDb";
+import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config({
-    path: path.resolve(__dirname, '../.env')
-})
+  path: path.resolve(__dirname, '../.env'),
+});
+
+import { server } from './utils/Socket'; // Import `server` instead of `app`
+import { connectDB } from './db/connectDb';
 
 // Start the server after successful DB connection
 connectDB()
-    .then(() => {
-        const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => {
-            console.log(`🚀 Server started on port ${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error(`❌ Something went wrong while connecting to the database: ${err.message}`);
-        process.exit(1); 
-    })
+  .then(() => {
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+      console.log(`🚀 Server started on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error(`❌ Error connecting to the database: ${err.message}`);
+    process.exit(1);
+  });
