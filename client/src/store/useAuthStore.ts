@@ -24,6 +24,8 @@ interface AuthState {
   signup: (data: object) => Promise<void>;
   login: (data: object) => Promise<void>;
   updateProfile: (formData: FormData) => Promise<void>;
+  connectSoket: () => Promise<void>;
+  disconnectSoket: () => Promise<void>;
 }
 
 export const handleError = (error: unknown): string => {
@@ -36,7 +38,7 @@ export const handleError = (error: unknown): string => {
   return "An unknown error occurred";
 };
 
-const useAuthStore = create<AuthState>((set) => ({
+const useAuthStore = create<AuthState>((set , get) => ({
   authUser: null,
   isCheckingAuth: true,
   isSigningUp: false,
@@ -66,6 +68,7 @@ const useAuthStore = create<AuthState>((set) => ({
       const res = await AxiosInstance.post("/auth/signup", data);
       set({ authUser: res.data.data });
       toast.success("Account created successfully");
+      get().connectSoket()
     } catch (error) {
       console.error("Signup Error:", error);
       const errorMessage = handleError(error);
@@ -81,6 +84,7 @@ const useAuthStore = create<AuthState>((set) => ({
       await AxiosInstance.post("/auth/logout");
       set({ authUser: null, error: null });
       toast.success("Logged out successfully");
+      get().disconnectSoket()
     } catch (error) {
       console.error("Logout Error:", error);
       const errorMessage = handleError(error);
@@ -95,6 +99,7 @@ const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await AxiosInstance.post("/auth/login", data);
       set({ authUser: res.data.data });
+      get().connectSoket()
       toast.success("Login successfully");
     } catch (error) {
       console.error("Login Error:", error);
@@ -125,6 +130,15 @@ const useAuthStore = create<AuthState>((set) => ({
       set({ isUpdatingProfile: false });
     }
   },
+
+  connectSoket: async ()=>{
+
+  },
+
+  disconnectSoket: async ()=>{
+
+  },
+
 }));
 
 export default useAuthStore;
