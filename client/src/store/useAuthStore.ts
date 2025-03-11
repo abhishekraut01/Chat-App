@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { AxiosInstance } from "../lib/AxiosInstance";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../constants";
+import { io, Socket } from "socket.io-client";
 
 interface AuthState {
   authUser: {
@@ -18,6 +20,7 @@ interface AuthState {
   isUpdatingProfile: boolean;
   error: string | null;
   onlineUsers: string[];
+  socket : null | Socket  ;
 
   checkAuth: () => Promise<void>;
   logout: () => Promise<void>;
@@ -46,6 +49,7 @@ const useAuthStore = create<AuthState>((set , get) => ({
   isUpdatingProfile: false,
   error: null,
   onlineUsers: [],
+  socket : null ,
 
   checkAuth: async () => {
     set({ isCheckingAuth: true, error: null });
@@ -53,6 +57,7 @@ const useAuthStore = create<AuthState>((set , get) => ({
     try {
       const res = await AxiosInstance.get("/auth/getuser");
       set({ authUser: res.data.data });
+      get().connectSoket()
     } catch (error) {
       console.error("Error in checkAuth:", error);
       set({ authUser: null, error: handleError(error) });
@@ -132,7 +137,11 @@ const useAuthStore = create<AuthState>((set , get) => ({
   },
 
   connectSoket: async ()=>{
+    const {authUser} = get()
+    if(!authUser || get().socket?.connected) return;
 
+    const socket = io(BASE_URL)
+    socket.connect()
   },
 
   disconnectSoket: async ()=>{

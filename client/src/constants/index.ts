@@ -31,4 +31,7 @@ export const THEMES = [
     "dim",
     "nord",
     "sunset",
-  ];
+];
+
+
+export const BASE_URL = 'http://localhost:8000'

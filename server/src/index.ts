@@ -1,12 +1,10 @@
-import dotenv from 'dotenv';
-import path from 'path';
+import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config({
-  path: path.resolve(__dirname, '../.env'),
-});
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import { server } from './utils/Socket'; // Import `server` instead of `app`
-import { connectDB } from './db/connectDb';
+import { server } from "./utils/Socket"; // Import `server`
+import { connectDB } from "./db/connectDb";
 
 // Start the server after successful DB connection
 connectDB()
