@@ -2,7 +2,7 @@
 
 const ErrorPage = () => {
   return (
-    <div className="pt-20 h-screen">ErrorPage</div>
+    <div className="pt-20 h-screen">404</div>
   )
 }
 
