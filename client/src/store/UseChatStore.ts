@@ -94,26 +94,29 @@ const UseChatStore = create<IUseChatStore>((set, get) => ({
     }
   },
 
-  subcribeToMessage : () => {
+  subcribeToMessage: () => {
     const { selectedUser } = get();
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
     socket.on("newMessage", (newMessage) => {
+      const isMessageSendFromSelectedUser =
+        newMessage.senderId !== selectedUser._id;
+      if (isMessageSendFromSelectedUser) return;
       set({
         messages: [...get().messages, newMessage],
       });
     });
   },
 
-  UnsubcribeToMessage : () => {
+  UnsubcribeToMessage: () => {
     const { selectedUser } = get();
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
-    socket.off("newMessage")
+    socket.off("newMessage");
   },
 
   setSelectedUser: (selectedUser: userData | null) => {
