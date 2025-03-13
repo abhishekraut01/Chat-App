@@ -146,8 +146,11 @@ const useAuthStore = create<AuthState>((set , get) => ({
       }
     })
     socket.connect()
-
     set({socket:socket})
+
+    socket.on('getOnlineUsers' , (userids:string[])=>{
+      set({onlineUsers:userids})
+    })
   },
 
   disconnectSoket: async ()=>{

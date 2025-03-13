@@ -7,6 +7,8 @@ import ApiResponse from '../utils/ApiResponse';
 import Message from '../models/message.model';
 import mongoose from 'mongoose';
 import uploadOnCloudinary from '../utils/Cloudinary';
+import { getUserSoketId, io } from '../utils/Socket';
+import { Socket } from 'socket.io';
 
 export const getAllUser = asyncHandler(
   async (req: CustomRequest, res: Response) => {
@@ -101,6 +103,14 @@ export const sendMessage = asyncHandler(async (req: CustomRequest, res: Response
   }
 
   //todo and socket logic 
+
+  const userSocketId = getUserSoketId(message.receiverId.toString());
+
+  if(!userSocketId){
+    throw new ApiError(500, "userSocketId not found");
+  }
+
+  io.to(userSocketId).emit("newMessage" , message)
 
   return res
       .status(201)

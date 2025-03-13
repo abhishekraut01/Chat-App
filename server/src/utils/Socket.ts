@@ -37,6 +37,10 @@ const io = new Server(server, {
 // Store connected users
 const users: Record<string, string> = {};
 
+export function getUserSoketId (userId:string){
+  return users[userId]
+}
+
 // WebSocket Event Handling
 io.on('connection', (socket) => {
   console.log(`⚡ New client connected: ${socket.id}`);
