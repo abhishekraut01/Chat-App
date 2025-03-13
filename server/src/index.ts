@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-
+import './app';
 import { server } from "./utils/Socket"; // Import `server`
 import { connectDB } from "./db/connectDb";
 

@@ -1,4 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import { app } from './utils/Socket';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -6,7 +7,6 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middlewares/globelErrorhandler.middleware';
 import ApiError from './utils/ApiError';
-import { app } from './utils/Socket';
 
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
