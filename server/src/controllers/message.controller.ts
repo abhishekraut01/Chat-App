@@ -52,7 +52,7 @@ export const getChatsById = asyncHandler(async (req: CustomRequest, res: Respons
     }).sort({ createdAt: 1 });
     
     if (!messages.length) {
-        throw new ApiError(404, "No messages found between these users");
+        throw new ApiError(404, "Start Conversation 🚀");
     }
 
     return res
