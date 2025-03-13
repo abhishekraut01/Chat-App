@@ -71,7 +71,7 @@ export const userSignUp = asyncHandler(async (req: Request, res: Response) => {
   const options: Ioptions = {
     secure: true,
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'none',
   };
 
   res
@@ -138,7 +138,7 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   const options: Ioptions = {
     secure: true,
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: 'none',
   };
 
   // Step 6: Return response
