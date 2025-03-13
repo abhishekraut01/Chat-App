@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { AxiosInstance } from "../lib/AxiosInstance";
-import { handleError } from "./useAuthStore";
+import useAuthStore, { handleError } from "./useAuthStore";
 import toast from "react-hot-toast";
 
 export type userData = {
@@ -32,6 +32,7 @@ interface IUseChatStore {
   error: string | null;
 
   getUsers: () => Promise<void>;
+  subcribeToMessage: () => void;
   getMessages: (id: string) => Promise<void>;
   setSelectedUser: (selectedUser: userData | null) => void;
   sendMessages: (messageData: FormData) => Promise<void>;
@@ -90,6 +91,19 @@ const UseChatStore = create<IUseChatStore>((set, get) => ({
       const errorMessage = handleError(error);
       toast.error(errorMessage);
     }
+  },
+
+  subcribeToMessage : () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+    if (!socket) return;
+    socket.on("newMessage", (newMessage) => {
+      set({
+        messages: [...get().messages, newMessage],
+      });
+    });
   },
 
   setSelectedUser: (selectedUser: userData | null) => {
