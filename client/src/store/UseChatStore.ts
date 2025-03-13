@@ -33,6 +33,7 @@ interface IUseChatStore {
 
   getUsers: () => Promise<void>;
   subcribeToMessage: () => void;
+  UnsubcribeToMessage: () => void;
   getMessages: (id: string) => Promise<void>;
   setSelectedUser: (selectedUser: userData | null) => void;
   sendMessages: (messageData: FormData) => Promise<void>;
@@ -104,6 +105,15 @@ const UseChatStore = create<IUseChatStore>((set, get) => ({
         messages: [...get().messages, newMessage],
       });
     });
+  },
+
+  UnsubcribeToMessage : () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+    if (!socket) return;
+    socket.off("newMessage")
   },
 
   setSelectedUser: (selectedUser: userData | null) => {

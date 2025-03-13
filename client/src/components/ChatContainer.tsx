@@ -6,15 +6,24 @@ import ChatInput from "./ChatInput";
 import useAuthStore from "../store/useAuthStore";
 
 const ChatContainer = () => {
-  const { messages, getMessages, selectedUser, isMessagesLoading } =
-    UseChatStore();
+  const {
+    messages,
+    getMessages,
+    selectedUser,
+    isMessagesLoading,
+    subcribeToMessage,
+    UnsubcribeToMessage,
+  } = UseChatStore();
   const { authUser } = useAuthStore();
 
   useEffect(() => {
     if (selectedUser?._id) {
       getMessages(selectedUser._id);
+      subcribeToMessage();
     }
-  }, [selectedUser, getMessages]);
+
+    return () => UnsubcribeToMessage();
+  }, [selectedUser, getMessages, UnsubcribeToMessage, subcribeToMessage]);
 
   if (isMessagesLoading) {
     return (
