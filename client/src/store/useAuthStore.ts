@@ -142,10 +142,12 @@ const useAuthStore = create<AuthState>((set , get) => ({
 
     const socket = io(BASE_URL)
     socket.connect()
+
+    set({socket:socket})
   },
 
   disconnectSoket: async ()=>{
-
+    if(get().socket?.connected) get().socket?.disconnect()
   },
 
 }));
