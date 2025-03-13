@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 // Create Express app
 const app: Application = express();
 
-const allowedOrigins = process.env.ALLOW_ORIGIN?.split(',') || ["http://localhost:5173"];
+const allowedOrigins = process.env.ALLOW_ORIGIN?.split(',') || ["https://chat-app-851o.onrender.com"];
 
 app.use(
   cors({

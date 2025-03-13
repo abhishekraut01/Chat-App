@@ -11,7 +11,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const server = http.createServer(app);
 
 const allowedOrigins = process.env.ALLOW_ORIGIN?.split(',') || [
-  'http://localhost:5173',
+  'https://chat-app-851o.onrender.com',
 ];
 
 // In your Socket.ts file
