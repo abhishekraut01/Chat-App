@@ -1,5 +1,5 @@
+// app.ts
 import express, { Application, Request, Response, NextFunction } from 'express';
-import { app } from './utils/Socket';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
@@ -11,13 +11,29 @@ import ApiError from './utils/ApiError';
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
-// Middlewares
+// Create Express app
+const app: Application = express();
+
+const allowedOrigins = process.env.ALLOW_ORIGIN?.split(',') || ["http://localhost:5173"];
+
 app.use(
   cors({
-    origin: process.env.ALLOW_ORIGIN,
+    origin: function(origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if(!origin) return callback(null, true);
+      
+      if(allowedOrigins.indexOf(origin) === -1) {
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
 
 app.use(helmet());
 app.use(cookieParser());
@@ -27,7 +43,6 @@ app.use(express.urlencoded({ limit: '5mb', extended: true }));
 // Import and use routes
 import authRoute from './routes/auth.routes';
 import messageRoutes from './routes/message.routes';
-
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/message', messageRoutes);
 
